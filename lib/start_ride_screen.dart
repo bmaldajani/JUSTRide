@@ -71,7 +71,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                             });
                           }
                         },
-                        child: const Text('Unlock Scooter!'),
+                        child: Text('Unlock Scooter!'),
                       ),
                     ],
                   ),
