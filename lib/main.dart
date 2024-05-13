@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/scooter_details_screen.dart';
+import 'package:flutter_scooter_rent_app/scooter_details_screen.dart';
 import 'Scooter.dart';
 import 'custom_elevated_button.dart';
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: 'JUSTRide Scooter Page'),
       routes: {
-        '/scooter_details_screen': (context) => ScooterDetailsScreen(
+        '/scooter_details_screen': (context) => OrderScooterPage(
           scooterId: scooter.id,
           battery: scooter.batteryLevel,
           location: scooter.location,

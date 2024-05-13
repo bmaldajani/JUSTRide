@@ -1,139 +1,243 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/start_ride_screen.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_scooter_rent_app/app_styles.dart';
+import 'package:flutter_scooter_rent_app/size_config.dart';
+import 'package:flutter_scooter_rent_app/start_ride_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:latlong2/latlong.dart';
 
-import 'check_other_scooters_screen.dart';
-import 'custom_elevated_button.dart';
-import 'main.dart';
-
-const kSpacing = SizedBox(height: 16);
-
-class ScooterDetailsScreen extends StatelessWidget {
+class OrderScooterPage extends StatelessWidget {
   final String scooterId;
   final int battery;
   final String location;
 
-  const ScooterDetailsScreen({
-    super.key,
-    required this.scooterId,
+  const OrderScooterPage({super.key, required this.scooterId,
     required this.battery,
-    required this.location,
-  });
+    required this.location,});
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Color.fromARGB(255, 23, 61, 93)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _ScooterDetailsSection(
-              scooterId: scooterId,
-              battery: battery,
-              location: location,
-            ),
-            kSpacing,
-            _ActionButtonsSection(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ScooterDetailsSection extends StatelessWidget {
-  final String scooterId;
-  final int battery;
-  final String location;
-
-  const _ScooterDetailsSection({
-    required this.scooterId,
-    required this.battery,
-    required this.location,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 50),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              "assets/images/scooter_details_background.png",
-              fit: BoxFit.cover,
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: kWhite,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Scooter ID: $scooterId',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontFamily: 'Roboto'),
+              SizedBox(
+                height: SizeConfig.screenHeight! * 0.6,
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    FlutterMap(
+                      options: const MapOptions(
+                        initialCenter: LatLng(32.493971, 35.992492),
+                        initialZoom: 16,
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.example.app',
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: const LatLng(32.493971, 35.992492),
+                              width: 60,
+                              height: 60,
+                              child: SvgPicture.asset(
+                                'assets/icon-scooter-marker-pin.svg',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Container(
+                        height: SizeConfig.screenHeight! * 0.2,
+                        width: SizeConfig.screenWidth,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            tileMode: TileMode.clamp,
+                            colors: [
+                              kWhite,
+                              kWhite,
+                              kWhite.withOpacity(0.7),
+                              kWhite.withOpacity(0.4),
+                              kWhite.withOpacity(0),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              kSpacing,
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Battery: $battery%',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontFamily: 'Roboto'),
+              SizedBox(
+                width: double.infinity,
+                height: 147,
+                child: Row(
+                  children: [
+                    Container(
+                      height: 147,
+                      width: SizeConfig.screenWidth! * 0.85,
+                      margin: const EdgeInsets.only(
+                        left: 24,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: kPadding8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(kBorderRadius10),
+                        border: Border.all(
+                          color: kGrey,
+                          width: 1,
+                        ),
+                        color: kWhite,
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 126,
+                            width: 126,
+                            child: Image.asset('assets/img-scooter-demo.png'),
+                          ),
+                          const SizedBox(
+                            height: 107,
+                            child: VerticalDivider(
+                              color: kGrey,
+                              thickness: 1,
+                              width: 1,
+                            ),
+                          ),
+                          SizedBox(
+                            width: SizeConfig.blockSizeHorizontal! * 3,
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Scooter Id: " + scooterId,
+                                  style: kWorkSansBold.copyWith(
+                                    color: kUltraViolet66,
+                                    fontSize: SizeConfig.blockSizeHorizontal! * 4,
+                                  ),
+                                ),
+                                Text(
+                                  location,
+                                  style: kWorkSansMedium.copyWith(
+                                    color: kLightUltraVioletAA,
+                                    fontSize:
+                                    SizeConfig.blockSizeHorizontal! * 2.9,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: SizeConfig.blockSizeVertical! * 1,
+                                ),
+                                const Divider(
+                                  color: kGrey,
+                                  thickness: 1,
+                                  height: 1,
+                                ),
+                                SizedBox(
+                                  height: SizeConfig.blockSizeVertical! * 1,
+                                ),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icon-energy-green.svg',
+                                    ),
+                                    SizedBox(
+                                      width:
+                                      SizeConfig.blockSizeHorizontal! * 1.5,
+                                    ),
+                                    Text(
+                                      'Battery left',
+                                      style: kWorkSansMedium.copyWith(
+                                        color: kLightUltraVioletAA,
+                                        fontSize:
+                                        SizeConfig.blockSizeHorizontal! * 2.9,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height:SizeConfig.blockSizeVertical! * 0.5,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    text: battery.toString(),
+                                    style: kWorkSansBold.copyWith(
+                                      color: kUltraViolet66,
+                                      fontSize:
+                                      SizeConfig.blockSizeHorizontal! * 6,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: ' percent',
+                                        style: kWorkSansMedium.copyWith(
+                                          color: kLightUltraVioletAA,
+                                          fontSize:
+                                          SizeConfig.blockSizeHorizontal! *
+                                              3.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              kSpacing,
-              Container(
-                alignment: Alignment.centerLeft,
+              SizedBox(
+                height: SizeConfig.blockSizeVertical! * 2.5,
+              ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => QRScannerScreen()),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kPadding24,
+                vertical: kPadding16,
+              ),
+              margin: const EdgeInsets.symmetric(
+                horizontal: kPadding24,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kBorderRadius12),
+                color: kYellowXanthousFF,
+              ),
+              child: Center(
                 child: Text(
-                  'Scooter location: $location',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontFamily: 'Roboto'),
+                  'Rent Scooter',
+                  style: kWorkSansSemibold.copyWith(
+                    color: kWhite,
+                    fontSize: SizeConfig.blockSizeHorizontal! * 4,
+                  ),
                 ),
               ),
-              const SizedBox(height: 200),
-            ],
-          ),
-        ],
+            ),
+          ),          ]),
+        ),
       ),
-    ) ;
-  }
-}class _ActionButtonsSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CustomElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => QRScannerScreen(),
-              ),
-            );
-          },
-          backgroundColor: Colors.green,
-          child: const Text('Start Ride'),
-        ),
-        kSpacing,
-        CustomElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyHomePage(title: 'JUSTRide Scooter Page'),
-              ),
-            );
-          },
-          backgroundColor: Colors.blueAccent,
-          child: const Text('Check Other Scooters'),
-        ),
-      ],
     );
   }
 }
