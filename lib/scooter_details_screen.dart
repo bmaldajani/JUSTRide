@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_scooter_rent_app/app_styles.dart';
+import 'package:flutter_scooter_rent_app/scooter.dart';
 import 'package:flutter_scooter_rent_app/size_config.dart';
 import 'package:flutter_scooter_rent_app/start_ride_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
 
 class OrderScooterPage extends StatelessWidget {
-  final String scooterId;
-  final int battery;
-  final String location;
-
-  const OrderScooterPage({super.key, required this.scooterId,
-    required this.battery,
-    required this.location,});
+  final Scooter scooter;
+  const OrderScooterPage({required this.scooter});
 
   @override
   Widget build(BuildContext context) {
@@ -126,14 +122,14 @@ class OrderScooterPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Scooter Id: " + scooterId,
+                                  "Scooter Id: " + scooter.id,
                                   style: kWorkSansBold.copyWith(
                                     color: kUltraViolet66,
                                     fontSize: SizeConfig.blockSizeHorizontal! * 4,
                                   ),
                                 ),
                                 Text(
-                                  location,
+                                  scooter.location,
                                   style: kWorkSansMedium.copyWith(
                                     color: kLightUltraVioletAA,
                                     fontSize:
@@ -175,7 +171,7 @@ class OrderScooterPage extends StatelessWidget {
                                 ),
                                 RichText(
                                   text: TextSpan(
-                                    text: battery.toString(),
+                                    text: scooter.batteryLevel.toString(),
                                     style: kWorkSansBold.copyWith(
                                       color: kUltraViolet66,
                                       fontSize:

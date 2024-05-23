@@ -1,3 +1,6 @@
+import 'package:flutter_scooter_rent_app/location.dart';
+import 'package:flutter_scooter_rent_app/stations.dart';
+
 class Scooter {
   final String id;
   final String location;
