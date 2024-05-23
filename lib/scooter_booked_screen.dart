@@ -6,6 +6,9 @@ import 'package:flutter_scooter_rent_app/size_config.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'RatingDialog.dart';
+import 'end_ride_screen.dart';
+
 class ScooterBookedScreen extends StatefulWidget {
   final String? code;
 
@@ -45,14 +48,23 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
     });
   }
 
+  void _showRatingDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return RatingDialog(
+          onSubmitted: (rating) {
+            // Handle the submitted rating here
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+  }
+
   void _endRide() {
     _timerInstance?.cancel();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EndRideScreen(),
-      ),
-    );
+    _showRatingDialog();
   }
 
   @override
@@ -177,20 +189,6 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class EndRideScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('End Ride'),
-      ),
-      body: Center(
-        child: Text('Ride has been ended.'),
       ),
     );
   }
