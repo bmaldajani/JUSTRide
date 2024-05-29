@@ -9,4 +9,11 @@ class Station {
   Location location;
 
   Station({required this.id, required this.name, required this.scooters, required this.location});
+  void addScooter(Scooter scooter) {
+    scooters.add(scooter);
+  }
+
+  void removeScooter(Scooter scooter) {
+    scooters.remove(scooter);
+  }
 }

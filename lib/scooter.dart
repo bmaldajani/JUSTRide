@@ -4,11 +4,13 @@ import 'package:flutter_scooter_rent_app/stations.dart';
 class Scooter {
   final String id;
   final String location;
+  final String stationid;
   final int batteryLevel;
   bool isBooked;
   bool isAvailable;
 
   Scooter({
+    this.stationid = "1",
     this.id = "1234",
     this.location = "M4",
     this.batteryLevel = 80,

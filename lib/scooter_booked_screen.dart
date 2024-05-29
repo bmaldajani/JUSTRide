@@ -2,17 +2,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_scooter_rent_app/app_styles.dart';
-import 'package:flutter_scooter_rent_app/size_config.dart';
+import 'package:flutter_scooter_rent_app/scooter.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'RatingDialog.dart';
-import 'end_ride_screen.dart';
 
 class ScooterBookedScreen extends StatefulWidget {
-  final String? code;
+  final Scooter scooter;
 
-  const ScooterBookedScreen({Key? key, required this.code}) : super(key: key);
+  const ScooterBookedScreen({super.key, required this.scooter});
 
   @override
   _ScooterBookedScreenState createState() => _ScooterBookedScreenState();
@@ -41,7 +40,7 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
   }
 
   void _startTimer() {
-    _timerInstance = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _timerInstance = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       setState(() {
         _timer++;
       });
@@ -53,10 +52,11 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
       context: context,
       builder: (context) {
         return RatingDialog(
-          onSubmitted: (rating) {
-            // Handle the submitted rating here
+          onSubmitted: (rating, station) {
+// Handle the submitted rating here
             Navigator.pop(context);
           },
+          stations: [],
         );
       },
     );
@@ -69,8 +69,6 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-
     return Scaffold(
       backgroundColor: kWhite,
       body: SafeArea(
@@ -78,28 +76,77 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: SizeConfig.screenHeight! * 0.6,
+                height: MediaQuery.of(context).size.height * 0.6,
                 width: double.infinity,
                 child: Stack(
                   children: [
-
+                    FlutterMap(
+                      options: const MapOptions(
+                        initialCenter: LatLng(32.493971, 35.992492),
+                        initialZoom: 16,
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.example.app',
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: const LatLng(32.493971, 35.992492),
+                              width: 60,
+                              height: 60,
+                              child: SvgPicture.asset(
+                                'assets/icon-scooter-marker-pin.svg',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                     Positioned(
                       bottom: 0,
                       left: 0,
                       child: Container(
-                        height: SizeConfig.screenHeight! * 0.2,
-                        width: SizeConfig.screenWidth,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
-                            tileMode: TileMode.clamp,
                             colors: [
-                              kWhite,
-                              kWhite,
-                              kWhite.withOpacity(0.7),
-                              kWhite.withOpacity(0.4),
-                              kWhite.withOpacity(0),
+                              kBlue,
+                              kBlue.withOpacity(0.5),
+                            ],
+                          ),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Time: ${_formatTime()}',
+                                style: kWorkSansMedium.copyWith(
+                                    color: kWhite, fontSize: 20),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: kBlue,
+                                  backgroundColor: kWhite,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(kBorderRadius10),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: kPadding12,
+                                      horizontal: kPadding24),
+                                  textStyle:
+                                      kWorkSansBold.copyWith(fontSize: 20),
+                                ),
+                                onPressed: _endRide,
+                                child: const Text('End Ride'),
+                              ),
                             ],
                           ),
                         ),
@@ -108,82 +155,27 @@ class _ScooterBookedScreenState extends State<ScooterBookedScreen> {
                   ],
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 147,
-                child: Row(
+              const VerticalDivider(),
+              Padding(
+                padding: const EdgeInsets.all(kPadding24),
+                child: Column(
                   children: [
-                    Container(
-                      height: 147,
-                      width: SizeConfig.screenWidth! * 0.85,
-                      margin: const EdgeInsets.only(
-                        left: 24,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: kPadding8,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(kBorderRadius10),
-                        border: Border.all(
-                          color: kGrey,
-                          width: 1,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${"JUST"} ${"2 Pro"}',
+                          style: kWorkSansBold.copyWith(
+                              color: kUltraViolet66, fontSize: 20),
                         ),
-                        color: kWhite,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '    Scooter ${widget.code} has been booked.',
-                            style: kWorkSansBold.copyWith(
-                              color: kUltraViolet66,
-                              fontSize: SizeConfig.blockSizeHorizontal! * 4,
-                            ),
-                          ),
-                          SizedBox(
-                            height: SizeConfig.blockSizeVertical! * 2,
-                          ),
-                          Text(
-                            "    Time  : " + _formatTime(),
-                            style: kWorkSansMedium.copyWith(
-                              color: kLightUltraVioletAA,
-                              fontSize:
-                              SizeConfig.blockSizeHorizontal! * 2.9,
-                            ),
-                          ),
-                        ],
-                      ),
+                      ],
+                    ),
+                    Image.asset(
+                      'assets/img-scooter-demo.png',
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.3,
                     ),
                   ],
-                ),
-              ),
-              SizedBox(
-                height: SizeConfig.blockSizeVertical! * 2.5,
-              ),
-              InkWell(
-                onTap: _endRide,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: kPadding24,
-                    vertical: kPadding16,
-                  ),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: kPadding24,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(kBorderRadius12),
-                    color: kYellowXanthousFF,
-                  ),
-                  child: Center(
-                    child: Text(
-                      'End Ride',
-                      style: kWorkSansSemibold.copyWith(
-                        color: kWhite,
-                        fontSize: SizeConfig.blockSizeHorizontal! * 4,
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],

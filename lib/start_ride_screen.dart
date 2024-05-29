@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_scooter_rent_app/scooter.dart';
 import 'package:flutter_scooter_rent_app/size_config.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'app_styles.dart';
@@ -16,6 +17,8 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
+
+  final Scooter scooter = new Scooter(id: 'scooter3', location: 'M5', batteryLevel: 90);
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +160,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ScooterBookedScreen(code: code),
+        builder: (context) => ScooterBookedScreen(scooter: scooter),
       ),
     );
   }

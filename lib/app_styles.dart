@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 const Color kUltraViolet66 = Color(0xff666592);
 const Color kLightUltraVioletAA = Color(0xffAAA9C9);
 const Color kYellowXanthousFF = Color(0xff5484ff);
+const Color kBlue = Color(0xff5484ff);
 const Color kGreenEmerald3D = Color(0xff3DC26F);
 const Color kLightGreenNyanzaE5 = Color(0xffE5FFDF);
 

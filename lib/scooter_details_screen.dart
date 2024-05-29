@@ -16,6 +16,14 @@ class OrderScooterPage extends StatelessWidget {
     SizeConfig().init(context);
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       backgroundColor: kWhite,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -202,38 +210,37 @@ class OrderScooterPage extends StatelessWidget {
               SizedBox(
                 height: SizeConfig.blockSizeVertical! * 2.5,
               ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => QRScannerScreen()),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: kPadding24,
-                vertical: kPadding16,
-              ),
-              margin: const EdgeInsets.symmetric(
-                horizontal: kPadding24,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(kBorderRadius12),
-                color: kYellowXanthousFF,
-              ),
-              child: Center(
-                child: Text(
-                  'Rent Scooter',
-                  style: kWorkSansSemibold.copyWith(
-                    color: kWhite,
-                    fontSize: SizeConfig.blockSizeHorizontal! * 4,
+            InkWell(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => QRScannerScreen(),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kPadding24,
+                  vertical: kPadding16,
+                ),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: kPadding24,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kBorderRadius12),
+                  color: kYellowXanthousFF,
+                ),
+                child: Center(
+                  child: Text(
+                    'Rent Scooter',
+                    style: kWorkSansSemibold.copyWith(
+                      color: kWhite,
+                      fontSize: SizeConfig.blockSizeHorizontal! * 4,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),          ]),
-        ),
+            )        ]),
       ),
-    );
+    ));
   }
 }
